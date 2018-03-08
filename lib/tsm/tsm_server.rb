@@ -90,7 +90,7 @@ module Tsm;
     end
     
     def dsmadmc?
-      Tsm::LOG.info "Try: #{Tsm::DSMADMC}"
+      Tsm::LOG.debug "Connect: #{Tsm::DSMADMC}"
       rc = `#{Tsm::DSMADMC} quit`
       raise "Can't connect to dsmadmc: #{rc}" if $?.exitstatus > 0
       return true

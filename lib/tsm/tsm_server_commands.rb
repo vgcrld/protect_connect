@@ -17,10 +17,11 @@ module Tsm; module ServerCommand
  
   class Base
 
-    attr_accessor :cmd, :data
+    attr_accessor :cmd, :data, :opts
 
-    def initialize
-      @cmd = make_cmd
+    def initialize(*opts)
+      @opts = opts
+      @cmd = make_cmd(opts)
       @data = Hash.new
     end
 
@@ -30,12 +31,13 @@ module Tsm; module ServerCommand
 
     private 
 
-    def make_cmd
-      self.class.to_s.split(/::/).last.
+    def make_cmd(opts=[])
+      cmd = self.class.to_s.split(/::/).last.
       gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
       gsub(/([a-z\d])([A-Z])/,'\1_\2').
       tr("_", " ").
       downcase
+      return ( cmd + " " + (opts.join(" ")))
     end
 
   end
@@ -44,7 +46,7 @@ module Tsm; module ServerCommand
   CMDS.each do |klass_name|
     klass = Class.new(Tsm::ServerCommand::Base) do
       define_method :cmd do
-        make_cmd
+        make_cmd(opts)
       end
     end
     Object.const_set(klass_name, klass)
