@@ -1,0 +1,24 @@
+PATH
+  remote: .
+  specs:
+    tsm (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    awesome_print (1.8.0)
+    logger (1.2.8)
+    rake (10.5.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  awesome_print
+  bundler (~> 1.16)
+  logger
+  rake (~> 10.0)
+  tsm!
+
+BUNDLED WITH
+   1.16.0
