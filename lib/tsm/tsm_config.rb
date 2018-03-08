@@ -10,22 +10,10 @@ module Tsm;
     -display=list
     -dataonly=yes
     -alwaysprompt
-    -NEWLINEAFTERPrompt
+    -newlineafterprompt
   ].join(" ")
 
   LOG = Logger.new(STDOUT)
 
-  CMDS = %w[ 
-    QueryDb
-    QueryLog
-    QueryLibrary
-    QueryDrive
-    QueryNode
-    QueryDomain
-    QueryPolicy
-    QueryMgmt
-    QueryCopy
-  ]
- 
 end
     

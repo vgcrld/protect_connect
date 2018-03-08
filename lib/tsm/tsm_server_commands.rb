@@ -1,5 +1,20 @@
+require 'json'
+
 module Tsm; module ServerCommand
 
+  CMDS = %w[ 
+    QueryActlog
+    QueryDb
+    QueryLog
+    QueryLibrary
+    QueryDrive
+    QueryNode
+    QueryDomain
+    QueryPolicy
+    QueryMgmt
+    QueryCopy
+  ]
+ 
   class Base
 
     attr_accessor :cmd, :data
@@ -7,6 +22,10 @@ module Tsm; module ServerCommand
     def initialize
       @cmd = make_cmd
       @data = Hash.new
+    end
+
+    def to_json
+      @data[:format].to_json
     end
 
     private 
