@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'commander'
+require 'tsm'
+require 'io/console'
+
+class MyApplication
+
+  include Commander::Methods
+
+  def run
+    program :name, 'tsm'
+    program :version, '0.0.1'
+    program :description, 'Run TSM server commands'
+
+    command :query do |c|
+      c.syntax = 'tsm query [options]'
+      c.summary = 'TSM Query'
+      c.description = 'Run a TSM query command to the background process started.'
+      c.example 'Run Query:', 'tsm query q db'
+      c.option '--detail', 'Add format=detail to the output'
+      c.action do |args, options|
+        # Do something or c.when_called Run::Commands::Query
+        server = Tsm::Server.new(:gem)
+        loop do
+          cmd = STDIN.gets.chomp
+          break if cmd =~ /quit/i 
+          res = server.exec(cmd)
+          puts res.data
+        end
+      end
+    end
+
+    run!
+  end
+end
+
+MyApplication.new.run if $0 == __FILE__

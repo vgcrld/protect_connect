@@ -7,6 +7,9 @@ GEM
   remote: https://rubygems.org/
   specs:
     awesome_print (1.8.0)
+    commander (4.4.4)
+      highline (~> 1.7.2)
+    highline (1.7.10)
     logger (1.2.8)
     rake (10.5.0)
 
@@ -16,6 +19,7 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   bundler (~> 1.16)
+  commander
   logger
   rake (~> 10.0)
   tsm!

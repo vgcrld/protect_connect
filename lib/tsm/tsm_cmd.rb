@@ -1,6 +1,6 @@
 require 'json'
 
-module Tsm; module ServerCommand
+module Tsm;
 
   CMDS = %w[ 
     QueryActlog
@@ -15,13 +15,12 @@ module Tsm; module ServerCommand
     QueryCopy
   ]
  
-  class Base
+  class Cmd
 
-    attr_accessor :cmd, :data, :opts
+    attr_accessor :cmd, :data
 
-    def initialize(*opts)
-      @opts = opts
-      @cmd = make_cmd(opts)
+    def initialize(cmd)
+      @cmd = cmd
       @data = Hash.new
     end
 
@@ -42,14 +41,4 @@ module Tsm; module ServerCommand
 
   end
 
-  # Define Server Command Classes Dynamically.  See tsm_config.rb CMDS
-  CMDS.each do |klass_name|
-    klass = Class.new(Tsm::ServerCommand::Base) do
-      define_method :cmd do
-        make_cmd(opts)
-      end
-    end
-    Object.const_set(klass_name, klass)
-  end
-
-end; end
+end;

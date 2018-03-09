@@ -45,19 +45,18 @@ module Tsm;
       @stderr.close unless @stderr.nil?
     end
     
-    def exec(tsmcmd)
-      cmd = tsmcmd.cmd
+    def exec(cmd)
+      tsmcmd = Tsm::Cmd.new(cmd)
       ret = Hash.new
       begin
         @stdin.puts(cmd)
       rescue
-        puts "Failed, reconnecting: #{fetch(@stderr)}"
+        puts "Failed, reconnecting."
+        close_all
+        connect
         retry
       end
-      data = get_buffered
-      ret[:format] = format(data)
-      ret[:raw] = data
-      tsmcmd.data = ret
+      tsmcmd.data = get_buffered
       return tsmcmd
     end
     
@@ -71,7 +70,8 @@ module Tsm;
         if (cycles%10000) == 0
           count += 1
           print "."
-          raise "Can't seem to connect." if count == 10
+          raise "Can't seem to connect." if count == 100
+          print "\n"
         end
       end
       return data
