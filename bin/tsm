@@ -23,12 +23,25 @@ class MyApplication
       c.option '--detail', 'Add format=detail to the output'
       c.action do |args, options|
         # Do something or c.when_called Run::Commands::Query
-        server = Tsm::Server.new(:gem)
+        begin
+          server = Tsm::Server.new
+        ensure
+          server.quit
+        end
         loop do
           cmd = STDIN.gets.chomp
-          break if cmd =~ /quit/i 
-          res = server.exec(cmd)
-          puts res.data
+          case cmd
+          when "outfile"
+            puts server.output.path
+          when "quit"
+            server.quit
+            break
+          when "reinit"
+            server.reinit
+          else
+            res = server.exec(cmd)
+            puts res.data
+          end
         end
       end
     end

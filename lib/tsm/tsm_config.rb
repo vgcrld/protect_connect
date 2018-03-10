@@ -2,6 +2,8 @@ require 'logger'
 
 module Tsm;
 
+  PROMPT = /(?<product>Protect|TSM): (?<server>\w+)>/
+
   DSMADMC = %w[
     dsmadmc
     -se=gem
