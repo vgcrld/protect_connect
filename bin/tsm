@@ -23,14 +23,13 @@ class MyApplication
       c.option '--detail', 'Add format=detail to the output'
       c.action do |args, options|
         # Do something or c.when_called Run::Commands::Query
-        begin
-          server = Tsm::Server.new
-        ensure
-          server.quit
-        end
+        server = Tsm::Server.new
         loop do
+          print "outfile|size|reinit|quit|<cmd>: "
           cmd = STDIN.gets.chomp
           case cmd
+          when "size"
+            puts server.output.size
           when "outfile"
             puts server.output.path
           when "quit"
