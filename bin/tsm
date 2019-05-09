@@ -11,7 +11,6 @@ class MyApplication
   include Commander::Methods
 
   def run
-    puts "Running"
     program :name, 'tsm'
     program :version, '0.0.1'
     program :description, 'Run TSM server commands'
