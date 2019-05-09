@@ -1,6 +1,6 @@
 # Tsm
 
-TODO: This should be renamed to spectrum protect before it is released.
+TODO: This should be renamed to protect_connect before it is released.
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/tsm`. To experiment with that code, run `bin/console` for an interactive prompt.
 
