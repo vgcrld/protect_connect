@@ -2,6 +2,8 @@ require 'logger'
 
 module Tsm;
 
+  PROMPT = /(?<product>Protect|TSM): (?<server>\w+)>/
+
   DSMADMC = %w[
     dsmadmc
     -se=gem
@@ -10,22 +12,10 @@ module Tsm;
     -display=list
     -dataonly=yes
     -alwaysprompt
-    -NEWLINEAFTERPrompt
+    -newlineafterprompt
   ].join(" ")
 
   LOG = Logger.new(STDOUT)
 
-  CMDS = %w[ 
-    QueryDb
-    QueryLog
-    QueryLibrary
-    QueryDrive
-    QueryNode
-    QueryDomain
-    QueryPolicy
-    QueryMgmt
-    QueryCopy
-  ]
- 
 end
     

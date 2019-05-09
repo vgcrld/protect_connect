@@ -1,4 +1,3 @@
-require 'awesome_print'
 require 'open3'
 require 'tempfile'
 
@@ -8,89 +7,81 @@ module Tsm;
 
   class Server
     
-    attr_reader :data
+    attr_reader :output
 
-    def initialize(servername)
-      @data = setup(servername)
-      @delim = get_delim
-      @data = Hash.new(false)
-    end
-
-    def setup(servername)
-      Tsm::LOG.info "Connect to TSM Server Name: #{servername}"
+    def initialize
       dsmadmc?
-      connect
-      return Hash.new(false)
+      init
     end
 
-    def connect
-      @output = Tempfile.new(['tsmoutput-','.tmp'])
-      @output.sync = true
-      @outs ||= []
-      @outs << @output
-      @stdin, @stdout, @stderr, @pid = popen3("#{Tsm::DSMADMC} > #{@output.path}")
+    def init
+      @output = outfile
+      @stdin = connect(@output)
+      trash = get_buffered
     end
-    
-    def get_delim
-      delim = nil
-      while delim.nil? or delim.empty?
-        delim = get_buffered('.*:.*>\n')
-      end
-      return delim
+
+    def quit
+      close_all
+    end
+
+    def reinit
+      close_all
+      init
+    end
+
+    def exec(cmd)
+      runcmd(cmd)
+    end
+
+    private 
+
+    def outfile
+      output = Tempfile.new(['tsmoutput-','.tmp'])
+      output.sync = true
+      return output
+    end
+
+    def connect(outfile)
+      stdin, stdout, stderr, pid = popen3("#{Tsm::DSMADMC} > #{outfile.path}")
+      return stdin
     end
     
     def close_all
-      @stdin.close  unless @stdin.nil?
-      @stdout.close unless @stdout.nil?
-      @stderr.close unless @stderr.nil?
+      @output.unlink
+      @stdin.close
     end
     
-    def exec(tsmcmd)
-      cmd = tsmcmd.cmd
+    def runcmd(cmd)
+      tsmcmd = Tsm::Cmd.new(cmd)
       ret = Hash.new
       begin
         @stdin.puts(cmd)
       rescue
-        puts "Failed, reconnecting: #{fetch(@stderr)}"
-        retry
+        puts "Failed, reconnecting."
+        close_all
+        init
+        @stdin.puts(cmd)
       end
-      data = get_buffered
-      ret[:format] = format(data)
-      ret[:raw] = data
-      tsmcmd.data = ret
+      tsmcmd.data = get_buffered
       return tsmcmd
     end
     
-    def get_buffered(delim=@delim)
+    def get_buffered
       data = ""
       cycles = 0
       count = 0
-      until data.match /#{delim}$/
+      until (match=data.match(Tsm::PROMPT))
         data += @output.read_nonblock(@output.size-@output.pos)
         cycles += 1
         if (cycles%10000) == 0
           count += 1
-          print "."
-          raise "Can't seem to connect." if count == 10
+          raise "Connect failed." if count == 100
         end
       end
       return data
     end
     
-    def format(data,delim=@delim)
-      data = data.gsub(delim,"").squeeze("\n")
-      data.lines.map do |line|
-        line.strip.squeeze(" ").split(": ",2)
-      end
-    end
-    
-    def reopen
-      close_all
-      connect
-    end
-    
     def dsmadmc?
-      Tsm::LOG.info "Try: #{Tsm::DSMADMC}"
       rc = `#{Tsm::DSMADMC} quit`
       raise "Can't connect to dsmadmc: #{rc}" if $?.exitstatus > 0
       return true
