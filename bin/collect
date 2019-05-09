@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'tsm'
+require 'awesome_print'
+require 'logger'
+
+
+
+l = Logger.new(STDOUT)
+
+cmds = [ 
+  'q db',
+  'q log f=d',
+  'q vol f=d'
+]
+
+output = []
+
+2.times do |i|
+
+  l.info "Getting commands."
+  s = Tsm::Server.new
+  output += cmds.map do |c| 
+    l.info "Get command: #{c}"
+    s.exec(c)
+  end
+  s.close
+  sleep 2
+
+end
+
+  
+
