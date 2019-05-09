@@ -1,5 +1,6 @@
 require 'open3'
 require 'tempfile'
+require 'fileutils'
 
 include Open3
 
@@ -31,6 +32,16 @@ module Tsm;
 
     def exec(cmd)
       runcmd(cmd)
+    end
+
+    def save(file)
+      begin
+        FileUtils.cp(output.path,file)
+      rescue
+        puts "Unable to copy to #{file}."
+        return
+      end
+      reinit
     end
 
     private 

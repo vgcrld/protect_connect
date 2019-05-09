@@ -26,9 +26,13 @@ class MyApplication
         # Do something or c.when_called Run::Commands::Query
         server = Tsm::Server.new
         loop do
-          print "outfile|size|reinit|quit|<cmd>: "
+          print "outfile|size|reinit|quit|save <f>|cmd>: "
           cmd = STDIN.gets.chomp
           case cmd
+          when /^save \w*/
+            file = cmd.split(" ",2).last
+            puts "Saving to #{file}"
+            server.save(file)
           when "size"
             puts server.output.size
           when "outfile"
