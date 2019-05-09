@@ -8,3 +8,4 @@ gemspec
 gem 'awesome_print'
 gem 'logger'
 gem 'commander'
+gem 'optimist'

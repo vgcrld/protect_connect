@@ -8,11 +8,14 @@ module Tsm;
 
   class Server
     
-    attr_reader :output
+    attr_reader :output, :uuid, :name, :dsmadmc
 
-    def initialize
-      dsmadmc?
+    def initialize(stanza)
+      @dsmadmc = dsmadmc?(stanza)
       init
+      @uuid = get_uuid
+      @name = get_name
+      @stanza = stanza
     end
 
     def init
@@ -47,6 +50,17 @@ module Tsm;
 
     private 
 
+    def get_uuid
+      self.exec('select MACHINE_GUID from status')
+        .to_h.values.first.first.delete(".")
+    end
+
+    def get_name
+      self.exec('select SERVER_NAME from status')
+        .to_h.values.first.first.delete(".")
+    end
+
+
     def outfile
       output = Tempfile.new(['tsmoutput-','.tmp'])
       output.sync = true
@@ -54,7 +68,7 @@ module Tsm;
     end
 
     def connect(outfile)
-      stdin, stdout, stderr, pid = popen3("#{Tsm::DSMADMC} > #{outfile.path}")
+      stdin, stdout, stderr, pid = popen3("#{@dsmadmc} > #{outfile.path}")
       return stdin
     end
     
@@ -92,10 +106,11 @@ module Tsm;
       return data
     end
     
-    def dsmadmc?
-      rc = `#{Tsm::DSMADMC} quit`
+    def dsmadmc?(stanza)
+      dsmadmc = [ Tsm::DSMADMC, "-se=#{stanza}" ].join(" ")
+      rc = `#{dsmadmc} quit`
       raise "Can't connect to dsmadmc: #{rc}" if $?.exitstatus > 0
-      return true
+      return dsmadmc
     end
     
   end

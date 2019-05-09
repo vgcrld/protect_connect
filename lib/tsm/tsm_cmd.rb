@@ -2,14 +2,15 @@ require 'json'
 
 class Tsm::Cmd
 
-  attr_accessor :cmd, :ts
+  attr_accessor :name
 
-  attr_reader :data
+  attr_reader :data, :ts, :cmd
 
-  def initialize(cmd)
+  def initialize(cmd,name=nil)
     @ts = Time.now.to_f
     @cmd = cmd
     @data = nil
+    @name = make_name(cmd) if name.nil?
   end
 
   def data=(raw)
@@ -28,7 +29,8 @@ class Tsm::Cmd
     ret = {}
     ccc = @data.map do |o| 
       head, val = o.split(":",2)
-      head.strip!
+      head.strip! unless head.nil?
+      val.strip! unless val.nil?
       ret[head] ||= []
       ret[head] << val
     end
@@ -36,6 +38,10 @@ class Tsm::Cmd
   end
 
   private 
+
+  def make_name(name)
+    self.cmd.split(" ",3)[0..1].join("_").downcase
+  end
 
   def clean(raw)
     raw.lines.map(&:chomp)

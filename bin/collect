@@ -3,46 +3,70 @@
 require 'tsm'
 require 'awesome_print'
 require 'logger'
+require 'fileutils'
+require 'optimist'
 
-LOOPS = 2
-SLEEP = 10 
-OUTDIR = "/tmp"
+# Options
+opts = Optimist::options do 
+
+  opt :stanza, "TSM dsm.sys stanza",
+        type: :string,
+    required: true
+
+  opt :samples,  "No. of Samples",
+       type: :integer,
+    default: 1
+
+  opt :interval, "Interval Size (Sec)",
+       type: :integer,
+    default: 300
+
+  opt :commands, "Interval Size (Sec)",
+       type: :strings,
+       default: Tsm::COMMANDS
+
+end
+
+# Setup
+STANZA   = opts[:stanza]
+SAMPLES  = opts[:samples]
+INTERVAL = opts[:interval]
+CMDS     = opts[:commands]
 
 # Setup
 log = Logger.new(STDOUT)
-srv = Tsm::Server.new
+srv = Tsm::Server.new(STANZA)
 
-# Commands to run each time
-cmds = [ 
-  'select MACHINE_GUID from status',
-  'q db',
-  'q log f=d',
-  'q vol f=d',
-  'q pro',
-  'q sess f=d',
-  'q mount f=d',
-  'q act',
-  'q drive f=d',
-  'q path f=d',
-  'q node f=d'
-]
+# Where to put this
+OUTDIR = "/tmp/protect_collect/#{srv.name}-#{srv.uuid}"
+FileUtils.mkdir_p(OUTDIR)
+ 
+1.upto(SAMPLES) do |i|
 
-1.upto(LOOPS) do |i|
-
-  log.info "Start loop #{i}/#{LOOPS}."
+  log.info "Start loop #{i}/#{SAMPLES}."
   output = []
-  cmds.each do |c| 
+  CMDS.each do |c| 
     log.info "Get command: #{c}"
     output << srv.exec(c)
   end
-  log.info "Finished loop #{i}/#{LOOPS}."
+  log.info "Finished loop #{i}/#{SAMPLES}."
 
-  unless i == LOOPS
-    log.info "Sleeping for #{SLEEP}"
-    sleep SLEEP
+  # Loop each TsmCmd and write it out
+  output.each do |o| 
+    out = File.new("#{OUTDIR}/#{o.name}_#{o.ts}.json",'w')
+    log.info "Writing output file #{out.path}"
+    out << o.to_json
+    out.close
+  end
+
+  # Sleep unless we are done
+  unless i == SAMPLES
+    log.info "Sleeping for #{INTERVAL}"
+    sleep INTERVAL
   end
 
 end
 
+# All done
 log.info "Finished, closing connection."
 srv.close
