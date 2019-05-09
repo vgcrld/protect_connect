@@ -23,7 +23,11 @@ opts = Optimist::options do
 
   opt :commands, "Interval Size (Sec)",
        type: :strings,
-       default: Tsm::COMMANDS
+    default: Tsm::COMMANDS
+
+  opt :outdir, "Output Directory",
+       type: :string,
+    default: '/tmp/protect_collect'
 
 end
 
@@ -38,7 +42,7 @@ log = Logger.new(STDOUT)
 srv = Tsm::Server.new(STANZA)
 
 # Where to put this
-OUTDIR = "/tmp/protect_collect/#{srv.name}-#{srv.uuid}"
+OUTDIR = "#{opts[:outdir]}/#{srv.name}-#{srv.uuid}"
 FileUtils.mkdir_p(OUTDIR)
  
 1.upto(SAMPLES) do |i|
