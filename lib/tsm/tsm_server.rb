@@ -65,7 +65,6 @@ module Tsm;
     
     def runcmd(cmd)
       tsmcmd = Tsm::Cmd.new(cmd)
-      ret = Hash.new
       begin
         @stdin.puts(cmd)
       rescue
