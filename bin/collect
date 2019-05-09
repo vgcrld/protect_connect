@@ -4,30 +4,48 @@ require 'tsm'
 require 'awesome_print'
 require 'logger'
 
+LOOPS = 1
+SLEEP = 2
+OUTDIR = "/tmp"
 
+# Setup
+log = Logger.new(STDOUT)
+srv = Tsm::Server.new
 
-l = Logger.new(STDOUT)
-
+# Commands to run each time
 cmds = [ 
   'q db',
   'q log f=d',
-  'q vol f=d'
+  'q vol f=d',
+  'q pro',
+  'q sess f=d',
+  'q mount f=d',
+  'q act',
+  'q drive f=d',
+  'q path f=d',
+  'q node f=d'
 ]
 
-output = []
+1.upto(LOOPS) do |i|
 
-2.times do |i|
-
-  l.info "Getting commands."
-  s = Tsm::Server.new
-  output += cmds.map do |c| 
-    l.info "Get command: #{c}"
-    s.exec(c)
+  log.info "Start loop #{i}/#{LOOPS}."
+  cmds.each do |c| 
+    log.info "Get command: #{c}"
+    srv.exec(c)
   end
-  s.close
-  sleep 2
+
+  outfile = [ OUTDIR, "/TSMDATA-", rand(99999) ].join
+  log.info "Output to file: #{outfile}"
+  srv.save(outfile)
+
+  log.info "Finished loop #{i}/#{LOOPS}."
+
+  unless i == LOOPS
+    log.info "Sleeping for #{SLEEP}"
+    sleep SLEEP
+  end
 
 end
 
-  
-
+log.info "Finished, closing connection."
+srv.close

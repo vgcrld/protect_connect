@@ -20,6 +20,7 @@ module Tsm;
       @stdin = connect(@output)
       trash = get_buffered
     end
+    alias close init
 
     def quit
       close_all
