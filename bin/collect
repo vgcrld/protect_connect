@@ -4,8 +4,8 @@ require 'tsm'
 require 'awesome_print'
 require 'logger'
 
-LOOPS = 1
-SLEEP = 2
+LOOPS = 2
+SLEEP = 10 
 OUTDIR = "/tmp"
 
 # Setup
@@ -14,6 +14,7 @@ srv = Tsm::Server.new
 
 # Commands to run each time
 cmds = [ 
+  'select MACHINE_GUID from status',
   'q db',
   'q log f=d',
   'q vol f=d',
@@ -34,7 +35,7 @@ cmds = [
     srv.exec(c)
   end
 
-  outfile = [ OUTDIR, "/TSMDATA-", rand(99999) ].join
+  outfile = [ OUTDIR, "/TSMDATA-", Time.now.to_i ].join
   log.info "Output to file: #{outfile}"
   srv.save(outfile)
 
