@@ -1,0 +1,22 @@
+require 'awesome_print'
+require 'json'
+
+
+data = {}
+Dir.glob('/tmp/protect_collect/TSM1500-d60b21da185e11e682260894ef035c20/*.json').map do |file|
+  key = File.basename(file)
+  data[key] = JSON.load(File.new(file,'r'))
+end
+
+report = {}
+data.map do |fn,maps|
+  rep={}
+  maps.each{ |k,v| rep[k] = v.length }
+  report[fn] = rep
+end
+
+ap report
+
+
+
+

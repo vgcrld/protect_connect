@@ -48,9 +48,11 @@ class Tsm::Cmd
   end
 
   def clean(raw)
-    raw.lines.map(&:chomp)
+    ret = raw.lines.map(&:chomp)
       .grep_v("")
-      .grep_v(/^Protect: .*\>/)
+      .grep_v(Tsm::PROMPT)
+    return ret
   end
+
 
 end
