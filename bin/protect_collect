@@ -15,7 +15,7 @@ opts = Optimist::options do
 
   opt :samples,  "No. of Samples",
        type: :integer,
-    default: 1
+    default: 6
 
   opt :interval, "Interval Size (Sec)",
        type: :integer,
