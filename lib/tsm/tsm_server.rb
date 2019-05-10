@@ -12,16 +12,18 @@ module Tsm;
 
     def initialize(stanza)
       @dsmadmc = dsmadmc?(stanza)
-      init
+      @prompt = init
       @uuid = get_uuid
       @name = get_name
       @stanza = stanza
     end
 
+    # Inital login should return the prompt from TSM
     def init
       @output = outfile
       @stdin = connect(@output)
       trash = get_buffered
+      return trash
     end
     alias close init
 
@@ -34,8 +36,18 @@ module Tsm;
       init
     end
 
-    def exec(cmd)
-      runcmd(cmd)
+    def exec(cmd,name=nil)
+      tsmcmd = Tsm::Cmd.new(cmd,name=name)
+      begin
+        @stdin.puts(cmd)
+      rescue
+        puts "Failed, reconnecting."
+        close_all
+        init
+        @stdin.puts(cmd)
+      end
+      tsmcmd.data = get_buffered
+      return tsmcmd
     end
 
     def save(file)
@@ -75,20 +87,6 @@ module Tsm;
     def close_all
       @output.unlink
       @stdin.close
-    end
-
-    def runcmd(cmd)
-      tsmcmd = Tsm::Cmd.new(cmd)
-      begin
-        @stdin.puts(cmd)
-      rescue
-        puts "Failed, reconnecting."
-        close_all
-        init
-        @stdin.puts(cmd)
-      end
-      tsmcmd.data = get_buffered
-      return tsmcmd
     end
 
     def get_buffered

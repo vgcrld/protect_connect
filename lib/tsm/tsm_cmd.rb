@@ -10,7 +10,7 @@ class Tsm::Cmd
     @ts = Time.now.to_f
     @cmd = cmd
     @data = nil
-    @name = make_name(cmd) if name.nil?
+    @name = make_name(cmd,name)
   end
 
   def data=(raw)
@@ -24,10 +24,10 @@ class Tsm::Cmd
   def headers
     self.to_h.keys
   end
-   
+
   def to_h
     ret = {}
-    ccc = @data.map do |o| 
+    ccc = @data.map do |o|
       head, val = o.split(":",2)
       head.strip! unless head.nil?
       val.strip! unless val.nil?
@@ -37,10 +37,14 @@ class Tsm::Cmd
     return ret
   end
 
-  private 
+  private
 
-  def make_name(name)
-    self.cmd.split(" ",3)[0..1].join("_").downcase
+  def make_name(cmd,name)
+    if name.nil?
+      cmd.split(" ",3)[0..1].join("_").downcase
+    else
+      name
+    end
   end
 
   def clean(raw)

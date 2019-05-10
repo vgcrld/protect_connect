@@ -6,6 +6,10 @@ require 'logger'
 require 'fileutils'
 require 'optimist'
 
+Signal.trap('INT') {
+  exit 1
+}
+
 # Options
 opts = Optimist::options do
 
@@ -21,9 +25,8 @@ opts = Optimist::options do
        type: :integer,
     default: 300
 
-  opt :commands, "Commands to Run each interval",
-       type: :strings,
-    default: Tsm::COMMANDS
+  opt :commands, "Command list to run, e.g: 'q db/database'",
+       type: :strings
 
   opt :outdir, "Output Directory",
        type: :string,
@@ -31,11 +34,21 @@ opts = Optimist::options do
 
 end
 
+def make_cmds(cmds)
+  ret = cmds.map do |o|
+    cmd, name = o.split("/",2)
+    Optimist::die(:commands, "cmd must be specified as 'cmd/name'") if name.nil?
+    [ cmd, name ]
+  end
+end
+
 # Setup
 STANZA   = opts[:stanza]
 SAMPLES  = opts[:samples]
 INTERVAL = opts[:interval]
-CMDS     = opts[:commands]
+CMDS     = opts[:commands].nil? ? Tsm::COMMANDS : make_cmds(opts[:commands])
+
+
 
 # Setup
 log = Logger.new(STDOUT)
@@ -50,8 +63,9 @@ FileUtils.mkdir_p(OUTDIR)
   log.info "Start loop #{i}/#{SAMPLES}."
   output = []
   CMDS.each do |c|
+    c,name = c
     log.info "Get command: #{c}"
-    output << srv.exec(c)
+    output << srv.exec(c,name)
   end
   log.info "Finished loop #{i}/#{SAMPLES}."
 
