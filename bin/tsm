@@ -23,7 +23,7 @@ class MyApplication
       c.option '--detail', 'Add format=detail to the output'
       c.action do |args, options|
         # Do something or c.when_called Run::Commands::Query
-        server = Tsm::Server.new
+        server = Tsm::Server.new('gem')
         loop do
           print "outfile|size|reinit|quit|save <f>|cmd>: "
           cmd = STDIN.gets.chomp
@@ -53,4 +53,4 @@ class MyApplication
   end
 end
 
-MyApplication.new.run 
+MyApplication.new.run

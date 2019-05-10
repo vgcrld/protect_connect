@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+
+require 'tsm'
+require 'awesome_print'
+require 'logger'
+require 'fileutils'
+require 'optimist'
+
+# Options
+opts = Optimist::options do
+
+  opt :stanza, "TSM dsm.sys stanza",
+        type: :string, required: true
+
+  opt :start, "Select from <start> minutes ago",
+        type: :integer,
+        default: 30
+
+  opt :length, "Minutes from <start>",
+        type: :integer,
+        default: 30
+
+  opt :commands, "Send only Filter",
+        type: :string
+
+  opt :outdir, "Output Directory",
+        type: :string, default: '/tmp/protect_collect'
+
+  opt :sendir, "Send file queue",
+        type: :string, default: '/tmp/protect_collect/queue'
+
+  opt :test, "Only show files to be sent"
+
+end
+
+# Setup
+STANZA   = opts[:stanza]
+TESTONLY = opts[:test]
+
+log = Logger.new(STDOUT)
+srv = Tsm::Server.new(STANZA)
+
+OUTDIR = "#{opts[:outdir]}/#{srv.name}-#{srv.uuid}"
+FileUtils.mkdir_p(OUTDIR)
+
+SENDIR = "#{opts[:sendir]}"
+FileUtils.mkdir_p(SENDIR)
+
+# Make Start and End
+starttime = Time.now - (opts[:start] * 60)
+endtime   = starttime + (opts[:length] * 60)
+log.info "Select from #{starttime} to #{endtime}"
+
+# Filter on name (:commands option)
+if opts[:commands].nil?
+  files = Dir.glob("#{OUTDIR}/*.json")
+else
+  filter = Regexp.new(opts[:commands])
+  files = Dir.glob("#{OUTDIR}/*.json").grep(filter)
+end
+
+# Filter on date
+files = files.select do |file|
+  now = Time.now.to_f
+  ts = Time.at(file.match(/_(\d+\.\d+)\.json$/)[1].to_f)
+  file if ts >= starttime and ts <= endtime
+end
+
+# Make file and tar it up
+tarfile = "#{SENDIR}/#{srv.name}.#{Time.now.strftime("%Y%m%d.%H%M%S.%Z")}.#{srv.uuid}.tsm"
+files.each do |file|
+  dir = File.dirname(file)
+  fn  = File.basename(file)
+  log.info "Adding to send: #{fn}"
+  next if opts[:test]
+  `tar -uvf #{tarfile} -C #{dir} '#{fn}'`
+end
+
+if opts[:test]
+  log.warn "File not created --test was specified."
+else
+  `gzip #{tarfile}` unless opts[:test]
+end
+
+# All done
+log.info "Finished, closing connection."
+srv.close

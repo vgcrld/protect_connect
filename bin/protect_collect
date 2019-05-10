@@ -7,7 +7,7 @@ require 'fileutils'
 require 'optimist'
 
 # Options
-opts = Optimist::options do 
+opts = Optimist::options do
 
   opt :stanza, "TSM dsm.sys stanza",
         type: :string,
@@ -21,7 +21,7 @@ opts = Optimist::options do
        type: :integer,
     default: 300
 
-  opt :commands, "Interval Size (Sec)",
+  opt :commands, "Commands to Run each interval",
        type: :strings,
     default: Tsm::COMMANDS
 
@@ -44,19 +44,19 @@ srv = Tsm::Server.new(STANZA)
 # Where to put this
 OUTDIR = "#{opts[:outdir]}/#{srv.name}-#{srv.uuid}"
 FileUtils.mkdir_p(OUTDIR)
- 
+
 1.upto(SAMPLES) do |i|
 
   log.info "Start loop #{i}/#{SAMPLES}."
   output = []
-  CMDS.each do |c| 
+  CMDS.each do |c|
     log.info "Get command: #{c}"
     output << srv.exec(c)
   end
   log.info "Finished loop #{i}/#{SAMPLES}."
 
   # Loop each TsmCmd and write it out
-  output.each do |o| 
+  output.each do |o|
     out = File.new("#{OUTDIR}/#{o.name}_#{o.ts}.json",'w')
     log.info "Writing output file #{out.path}"
     out << o.to_json
