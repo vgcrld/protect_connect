@@ -1,9 +1,15 @@
+#!/usr/bin/env ruby
+
 require 'awesome_print'
 require 'json'
+require 'optimist'
 
+opts = Optimist::options do
+  opt :path, "glob of json files from protect_collect",  required: true, type: :string
+end
 
 data = {}
-Dir.glob('/tmp/protect_collect/TSM1500-d60b21da185e11e682260894ef035c20/*.json').map do |file|
+Dir.glob(opts[:path]).map do |file|
   key = File.basename(file)
   data[key] = JSON.load(File.new(file,'r'))
 end
