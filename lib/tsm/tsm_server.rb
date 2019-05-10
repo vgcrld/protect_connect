@@ -7,7 +7,7 @@ include Open3
 module Tsm;
 
   class Server
-    
+
     attr_reader :output, :uuid, :name, :dsmadmc
 
     def initialize(stanza)
@@ -48,7 +48,7 @@ module Tsm;
       reinit
     end
 
-    private 
+    private
 
     def get_uuid
       self.exec('select MACHINE_GUID from status')
@@ -71,12 +71,12 @@ module Tsm;
       stdin, stdout, stderr, pid = popen3("#{@dsmadmc} > #{outfile.path}")
       return stdin
     end
-    
+
     def close_all
       @output.unlink
       @stdin.close
     end
-    
+
     def runcmd(cmd)
       tsmcmd = Tsm::Cmd.new(cmd)
       begin
@@ -90,7 +90,7 @@ module Tsm;
       tsmcmd.data = get_buffered
       return tsmcmd
     end
-    
+
     def get_buffered
       data = ""
       cycles = 0
@@ -105,13 +105,13 @@ module Tsm;
       end
       return data
     end
-    
+
     def dsmadmc?(stanza)
       dsmadmc = [ Tsm::DSMADMC, "-se=#{stanza}" ].join(" ")
       rc = `#{dsmadmc} quit`
       raise "Can't connect to dsmadmc: #{rc}" if $?.exitstatus > 0
       return dsmadmc
     end
-    
+
   end
 end

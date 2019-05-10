@@ -2,7 +2,7 @@ require 'logger'
 
 module Tsm;
 
-  PROMPT = /(?<product>Protect|TSM): (?<server>\w+)>/
+  PROMPT = /(?<product>Protect|tsm|TSM): (?<server>\w+)>/
 
   DSMADMC = %w[
     dsmadmc
@@ -17,7 +17,7 @@ module Tsm;
   LOG = Logger.new(STDOUT)
 
   # Commands to run each time
-  COMMANDS = [ 
+  COMMANDS = [
     'q status',
     'q opt',
     'q db f=d',
@@ -43,4 +43,4 @@ module Tsm;
 
 
 end
-    
+
