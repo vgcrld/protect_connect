@@ -1,4 +1,4 @@
-require 'logger'
+require "logger"
 
 module Tsm;
 
@@ -16,30 +16,64 @@ module Tsm;
 
   LOG = Logger.new(STDOUT)
 
-  # Commands to run each time
-  COMMANDS = [
-    [ 'q status',        'status' ],
-    [ 'q opt',           'options' ],
-    [ 'q db f=d',        'database' ],
-    [ 'q log f=d',       'log' ],
-    [ 'q vol f=d',       'volume' ],
-    [ 'q pro',           'process' ],
-    [ 'q sess f=d',      'session' ],
-    [ 'q mount f=d',     'mount' ],
-    [ 'q drive f=d',     'drive' ],
-    [ 'q path f=d',      'path' ],
-    [ 'q node f=d',      'node' ],
-    [ 'q stg f=d',       'stgpool' ],
-    [ 'q do f=d',        'domain' ],
-    [ 'q pol f=d',       'policy' ],
-    [ 'q mg f=d',        'mgmtclass' ],
-    [ 'q copy f=d',      'backup_copygrp' ],
-    [ 'q copy t=a f=d',  'archive_copygrp' ],
-    [ 'q occ',           'occupancy' ],
-    [ 'q file f=d',      'filespace' ],
-    [ 'q ev * * f=d',    'client_event' ],
-    [ 'q ev * t=a f=d',  'admin_event' ],
-  ]
+  # ACTIVITY_SUMMARY
+  # ACTLOG
+  # ADMINS
+  # ADMIN_SCHEDULES
+  # ASSOCIATIONS
+  # AUDITOCC
+  # CLEANUP
+  # DAMAGED_FILES
+  # DEDUPSTATS
+  # DEDUP_STATS
+  # DEVCLASSES_DIR
+  # OCCUPANCY
+  # PLATFORM_APPLICATIONS
+  # TSM_MON_ALERT
+  # TSM_MON_ALERTTRIG
+  # TSM_MON_CMDHIST
+  # PLATFORM_BACKUP_COMPONENTS_VIEW
+  # PLATFORM_BACKUP_STATUS_VIEW
+  # PLATFORM_GROUP_SCANS
+  # PLATFORM_PROTECTION_COVERAGE_VIEW
+  # PLATFORM_RELATIONSHIPS
+
+  def commands(scan)
+    [
+      [ "q dev f=d",                "devclass" ],
+      [ "q libr f=d",               "library" ],
+      [ "q libv f=d",               "libvolumes" ],
+      [ "q shred f=d",              "shred" ],
+      [ "q san t=a f=d",            "san" ],
+      [ "q lic",                    "license" ],
+      [ "q status",                 "status" ],
+      [ "q opt",                    "options" ],
+      [ "q vol f=d",                "volume" ],
+      [ "q pro",                    "process" ],
+      [ "q sess f=d",               "session" ],
+      [ "q drive f=d",              "drive" ],
+      [ "q path f=d",               "path" ],
+      [ "q node f=d",               "node" ],
+      [ "q admin f=d",              "admins" ],
+      [ "q stg f=d",                "stgpool" ],
+      [ "q do f=d",                 "domain" ],
+      [ "q pol f=d",                "policy" ],
+      [ "q mg f=d",                 "mgmtclass" ],
+      [ "q copy f=d",               "backup_copygrp" ],
+      [ "q copy t=a f=d",           "archive_copygrp" ],
+      [ "q occ",                    "occupancy" ],
+      [ "q file f=d",               "filespace" ],
+
+      [ "select * from log",        "log" ],
+      [ "select * from database",   "database" ],
+
+      [ "select * from volumeusage"                                                                            "volumeusage"   ],
+      [ "select * from summary where end_time>=current_timestamp-(#{scan})second",                             "summary"       ],
+      [ "select * from volhistory where date_time>=current_timestamp-(#{scan})second",                         "volhistory"    ],
+      [ "select * from events where domain_name is not null and completed>=current_timestamp-(#{scan})second", "client_events" ],
+      [ "select * from events where domain_name is null     and completed>=current_timestamp-(#{scan})second", "admin_events"  ]
+    ]
+  end
 
 
 end

@@ -6,6 +6,8 @@ require 'logger'
 require 'fileutils'
 require 'optimist'
 
+include Tsm
+
 Signal.trap('INT') {
   exit 1
 }
@@ -34,6 +36,7 @@ opts = Optimist::options do
 
 end
 
+
 def make_cmds(cmds)
   ret = cmds.map do |o|
     cmd, name = o.split("/",2)
@@ -46,9 +49,7 @@ end
 STANZA   = opts[:stanza]
 SAMPLES  = opts[:samples]
 INTERVAL = opts[:interval]
-CMDS     = opts[:commands].nil? ? Tsm::COMMANDS : make_cmds(opts[:commands])
-
-
+CMDS     = opts[:commands].nil? ? Tsm::commands(INTERVAL) : make_cmds(opts[:commands])
 
 # Setup
 log = Logger.new(STDOUT)
