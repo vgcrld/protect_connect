@@ -49,8 +49,6 @@ module Tsm;
       [ "q status",                 "status" ],
       [ "q opt",                    "options" ],
       [ "q vol f=d",                "volume" ],
-      [ "q pro",                    "process" ],
-      [ "q sess f=d",               "session" ],
       [ "q drive f=d",              "drive" ],
       [ "q path f=d",               "path" ],
       [ "q node f=d",               "node" ],
@@ -63,9 +61,13 @@ module Tsm;
       [ "q copy t=a f=d",           "archive_copygrp" ],
       [ "q occ",                    "occupancy" ],
       [ "q file f=d",               "filespace" ],
+      [ "q dbspace f=d",            "dbspace" ],
+      [ "q dirspace f=d",           "dirspace" ],
 
       [ "select * from log",        "log" ],
       [ "select * from database",   "database" ],
+      [ "select * from sessions",   "sessions" ],
+      [ "select * from processes",  "process" ],
 
       [ "select * from volumeusage"                                                                            "volumeusage"   ],
       [ "select * from summary where end_time>=current_timestamp-(#{scan})second",                             "summary"       ],
