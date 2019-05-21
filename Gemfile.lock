@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    tsm (0.1.2)
+    protect_connect (0.1.2.pre.m.1)
 
 GEM
   remote: https://rubygems.org/
@@ -23,8 +23,8 @@ DEPENDENCIES
   commander
   logger
   optimist
+  protect_connect!
   rake (~> 10.0)
-  tsm!
 
 BUNDLED WITH
    1.16.0
