@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby
 
-require 'tsm'
+require 'protect_connect'
 require 'awesome_print'
 require 'logger'
 require 'fileutils'
 require 'optimist'
 
-include Tsm
+include ProtectConnect
 
 Signal.trap('INT') {
   exit 1

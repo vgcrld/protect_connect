@@ -3,7 +3,7 @@
 require 'awesome_print'
 require 'json'
 require 'optimist'
-require 'tsm'
+require 'protect_connect'
 
 opts = Optimist::options do
   opt :path, "glob of json files from protect_collect",  required: true, type: :string

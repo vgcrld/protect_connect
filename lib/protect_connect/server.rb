@@ -4,7 +4,7 @@ require 'fileutils'
 
 include Open3
 
-module Tsm;
+module ProtectConnect
 
   class Server
 
@@ -37,7 +37,7 @@ module Tsm;
     end
 
     def exec(cmd,name=nil)
-      tsmcmd = Tsm::Cmd.new(cmd,name=name)
+      tsmcmd = ProtectConnect::Cmd.new(cmd,name=name)
       begin
         @stdin.puts(cmd)
       rescue
@@ -93,7 +93,7 @@ module Tsm;
       data = ""
       cycles = 0
       count = 0
-      until (match=data.match(Tsm::PROMPT))
+      until (match=data.match(ProtectConnect::PROMPT))
         data += @output.read_nonblock(@output.size-@output.pos)
         cycles += 1
         if (cycles%10000) == 0
@@ -105,7 +105,7 @@ module Tsm;
     end
 
     def dsmadmc?(stanza)
-      dsmadmc = [ Tsm::DSMADMC, "-se=#{stanza}" ].join(" ")
+      dsmadmc = [ ProtectConnect::DSMADMC, "-se=#{stanza}" ].join(" ")
       rc = `#{dsmadmc} quit`
       raise "Can't connect to dsmadmc: #{rc}" if $?.exitstatus > 0
       return dsmadmc

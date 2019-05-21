@@ -1,15 +1,15 @@
 
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "tsm/version"
+require "protect_connect/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "tsm"
-  spec.version       = Tsm::VERSION
+  spec.name          = "protect_connect"
+  spec.version       = ProtectConnect::VERSION
   spec.authors       = ["Rich Davis"]
   spec.email         = ["vgcrld@gmail.com"]
 
-  spec.summary       = %q{TSM Server Gem}
+  spec.summary       = %q{Spectrum Protect Connect to Server Gem}
   spec.description   = %q{Pull data from a TSM Server / Spectrum Protect}
   spec.homepage      = "http://galileosuite.com"
   spec.license       = "MIT"

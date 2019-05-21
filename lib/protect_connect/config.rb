@@ -1,6 +1,6 @@
 require "logger"
 
-module Tsm;
+module ProtectConnect;
 
   PROMPT = /(?<product>Protect|tsm|TSM): (?<server>\w+)>/
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'tsm'
+require 'protect_connect'
 require 'awesome_print'
 require 'logger'
 require 'fileutils'
@@ -38,7 +38,7 @@ STANZA   = opts[:stanza]
 TESTONLY = opts[:test]
 
 log = Logger.new(STDOUT)
-srv = Tsm::Server.new(STANZA)
+srv = ProtectConnect::Server.new(STANZA)
 
 OUTDIR = "#{opts[:outdir]}/#{srv.name}-#{srv.uuid}"
 FileUtils.mkdir_p(OUTDIR)
@@ -67,7 +67,7 @@ files = files.select do |file|
 end
 
 # Make file and tar it up
-tarfile = "#{SENDIR}/#{srv.name}.#{Time.now.strftime("%Y%m%d.%H%M%S.%Z")}.#{srv.uuid}.tsm"
+tarfile = "#{SENDIR}/#{srv.name}.#{Time.now.strftime("%Y%m%d.%H%M%S.%Z")}.#{srv.uuid}.protect_connect"
 files.each do |file|
   dir = File.dirname(file)
   fn  = File.basename(file)

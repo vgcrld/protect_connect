@@ -1,6 +1,6 @@
 require 'json'
 
-class Tsm::Cmd
+class ProtectConnect::Cmd
 
   attr_accessor :name
 
@@ -50,7 +50,7 @@ class Tsm::Cmd
   def clean(raw)
     ret = raw.lines.map(&:chomp)
       .grep_v("")
-      .grep_v(Tsm::PROMPT)
+      .grep_v(ProtectConnect::PROMPT)
     return ret
   end
 
