@@ -49,11 +49,11 @@ end
 STANZA   = opts[:stanza]
 SAMPLES  = opts[:samples]
 INTERVAL = opts[:interval]
-CMDS     = opts[:commands].nil? ? Tsm::commands(INTERVAL) : make_cmds(opts[:commands])
+CMDS     = opts[:commands].nil? ? ProtectConnect::commands(INTERVAL) : make_cmds(opts[:commands])
 
 # Setup
 log = Logger.new(STDOUT)
-srv = Tsm::Server.new(STANZA)
+srv = ProtectConnect::Server.new(STANZA)
 
 # Where to put this
 OUTDIR = "#{opts[:outdir]}/#{srv.name}-#{srv.uuid}"
@@ -70,7 +70,7 @@ FileUtils.mkdir_p(OUTDIR)
   end
   log.info "Finished loop #{i}/#{SAMPLES}."
 
-  # Loop each TsmCmd and write it out
+  # Loop each ProtectConnect Cmd and write it out
   output.each do |o|
     out = File.new("#{OUTDIR}/#{o.name}_#{o.ts}.json",'w')
     log.info "Writing output file #{out.path}"
