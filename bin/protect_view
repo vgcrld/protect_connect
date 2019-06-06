@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require 'rack'
+require 'protect_connect'
+
+app = ProtectConnect::Viewer
+
+Rack::Handler::WEBrick.run app

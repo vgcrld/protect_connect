@@ -1,0 +1,38 @@
+
+require 'sinatra'
+require 'awesome_print'
+require 'json'
+require 'haml'
+require 'protect_connect'
+
+module ProtectConnect
+
+  class Viewer < Sinatra::Base
+
+    set :root, File.dirname(__FILE__)
+    set :title, "Spectrum Protect Connect"
+    set :static, true
+    
+    get '/settings' do
+      haml :settings
+    end
+
+    get '/summary' do
+      server = ProtectConnect::Server.new(:gem)
+      data = server.exec('select * from summary where start_time>=current_timestamp-(1)day')
+      data.to_json
+    end
+
+    get '/nodes' do
+      server = ProtectConnect::Server.new(:gem)
+      data = server.exec('q node f=d')
+      data.to_json
+    end
+
+    get '/' do
+      haml :doc
+    end
+
+  end
+
+end
