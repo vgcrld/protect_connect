@@ -1,6 +1,6 @@
 # Project Connect
 
-This is an example GEM for a few different technologies. Spectrum Project Connect, Sinatra, Tableau Web Data Connector.
+This is an example GEM for a few different technologies. Spectrum Protect, Sinatra and Tableau Web Data Connector.
 
 ## Installation
 
