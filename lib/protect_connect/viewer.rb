@@ -9,12 +9,19 @@ module ProtectConnect
 
   class Viewer < Sinatra::Base
 
-    set :root, File.dirname(__FILE__)
-    set :title, "Spectrum Protect Connect"
-    set :static, true
+    configure do
+      set :root, File.dirname(__FILE__)
+      set :title, "Spectrum Protect Connect"
+      set :static, true
+      enable :corss_origin
+    end
     
     get '/settings' do
       haml :settings
+    end
+
+    before do
+      response.headers['Access-Control-Allow-Origin'] = '*'
     end
 
     get '/summary' do
