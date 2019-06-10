@@ -1,15 +1,13 @@
-# Tsm
+# Project Connect
 
-TODO: This should be renamed to protect_connect before it is released.
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/tsm`. To experiment with that code, run `bin/console` for an interactive prompt.
+This is an example GEM for a few different technologies. Spectrum Protect, Sinatra and Tableau Web Data Connector.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'tsm'
+gem 'protect_connect'
 ```
 
 And then execute:
@@ -18,35 +16,20 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install tsm
+    $ gem install project_connect
 
 ## Usage
 
-Create a server:
+Create a server by creating a new `ProjectConnect::Server` object and pointing it to a dsm.sys stanza name. This requires that the `dsmadmc` executable be available on the system.
 
-`serv = Tsm::Server.new`
+`serv = ProjectConnect::Server.new(:stanza)`
 
 Submit commands to it:
 
-`res = serv.exec("q db")`
+`res = serv.exec("q db f=d")`
 
-A TsmCmd is returned:
+A ProtectConnect::Cmd is returned:
 
 `res.cmd`
 `res.data`
-
-# Other Tsm::Server Options
-
-What file are we writing to:
-
-`serv.output`
-
-Re-create the output file to clear used space:
-
-`serv.reinit`
-
-Exit and cleanup:
-
-`serv.quit`
-
-
+`res.to_json`
