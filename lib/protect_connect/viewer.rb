@@ -36,6 +36,12 @@ module ProtectConnect
       data.to_json
     end
 
+    get '/status' do
+      server = ProtectConnect::Server.new(:gem)
+      data = server.exec('q status')
+      data.to_json
+    end
+
     get '/' do
       haml :doc
     end
