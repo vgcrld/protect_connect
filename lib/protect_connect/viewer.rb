@@ -24,23 +24,15 @@ module ProtectConnect
       response.headers['Access-Control-Allow-Origin'] = '*'
     end
 
-    get '/summary' do
-      data = $server.exec('select * from summary where start_time>=current_timestamp-(1)day')
-      data.to_json
-    end
-
-    get '/nodes' do
-      data = $server.exec('q node f=d')
-      data.to_json
-    end
-
-    get '/status' do
-      data = $server.exec('q status')
-      data.to_json
-    end
-
     get '/' do
       haml :doc
+    end
+
+    get '/query/:instance/:query' do
+      instance=params[:instance].to_sym
+      query=params[:query]
+      data = $server[instance.to_sym].exec(query)
+      data.to_json
     end
 
   end

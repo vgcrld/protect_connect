@@ -3,7 +3,9 @@
 require 'rack'
 require 'protect_connect'
 
-$server = ProtectConnect::Server.new(:gem)
+$server = { 
+  :tsm1500 => ProtectConnect::Server.new(:gem) 
+}
 
 app = ProtectConnect::Viewer
 
