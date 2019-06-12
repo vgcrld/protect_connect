@@ -3,6 +3,8 @@
 require 'rack'
 require 'protect_connect'
 
+$server = ProtectConnect::Server.new(:gem)
+
 app = ProtectConnect::Viewer
 
 Rack::Handler::WEBrick.run app

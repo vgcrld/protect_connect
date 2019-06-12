@@ -25,20 +25,17 @@ module ProtectConnect
     end
 
     get '/summary' do
-      server = ProtectConnect::Server.new(:gem)
-      data = server.exec('select * from summary where start_time>=current_timestamp-(1)day')
+      data = $server.exec('select * from summary where start_time>=current_timestamp-(1)day')
       data.to_json
     end
 
     get '/nodes' do
-      server = ProtectConnect::Server.new(:gem)
-      data = server.exec('q node f=d')
+      data = $server.exec('q node f=d')
       data.to_json
     end
 
     get '/status' do
-      server = ProtectConnect::Server.new(:gem)
-      data = server.exec('q status')
+      data = $server.exec('q status')
       data.to_json
     end
 
