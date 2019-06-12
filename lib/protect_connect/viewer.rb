@@ -28,6 +28,12 @@ module ProtectConnect
       haml :doc
     end
 
+    get '/control/:instance/:command' do
+      instance=params[:instance].to_sym
+      command=params[:command].to_sym
+      $server[instance].send(command)
+    end
+
     get '/query/:instance/:query' do
       instance=params[:instance].to_sym
       query=params[:query]
