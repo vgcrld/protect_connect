@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Create a server by creating a new `ProjectConnect::Server` object and pointing it to a dsm.sys stanza name. This requires that the `dsmadmc` executable be available on the system.
 
-`serv = ProjectConnect::Server.new(:stanza)`
+`serv = ProtectConnect::Server.new(:stanza)`
 
 Submit commands to it:
 
