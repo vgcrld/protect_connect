@@ -10,6 +10,12 @@ Add this line to your application's Gemfile:
 gem 'protect_connect'
 ```
 
+or 
+
+```ruby
+gem 'protect_connect', git: 'git@github.com:vgcrld/protect_connect.git'
+```
+
 And then execute:
 
     $ bundle
@@ -33,3 +39,11 @@ A ProtectConnect::Cmd is returned:
 `res.cmd`
 `res.data`
 `res.to_json`
+
+## View
+
+You can also use the web view to get data out of a TSM instance. 
+
+`bundle exec proect_viewer`
+
+Note: right now this is only configured to speak to a specific TSM instance. It's hard coded in to find a dsm.sys stanza called "gem". 
