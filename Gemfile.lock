@@ -12,6 +12,7 @@ GEM
     awesome_print (1.8.0)
     commander (4.4.7)
       highline (~> 2.0.0)
+    diff-lcs (1.3)
     haml (5.1.1)
       temple (>= 0.8.0)
       tilt
@@ -23,6 +24,19 @@ GEM
     rack-protection (2.0.5)
       rack
     rake (10.5.0)
+    rspec (3.9.0)
+      rspec-core (~> 3.9.0)
+      rspec-expectations (~> 3.9.0)
+      rspec-mocks (~> 3.9.0)
+    rspec-core (3.9.0)
+      rspec-support (~> 3.9.0)
+    rspec-expectations (3.9.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-mocks (3.9.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-support (3.9.0)
     sinatra (2.0.5)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -42,6 +56,7 @@ DEPENDENCIES
   optimist
   protect_connect!
   rake (~> 10.0)
+  rspec (~> 3.2)
 
 BUNDLED WITH
-   1.16.0
+   1.17.2
