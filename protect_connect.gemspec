@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.executables   << 'check_metrics'
   spec.executables   << 'protect_collect'
   spec.executables   << 'protect_connect'
-  spec.executables   << 'protect_sent'
+  spec.executables   << 'protect_send'
   spec.executables   << 'protect_view'
 
   spec.require_paths = ["lib"]
