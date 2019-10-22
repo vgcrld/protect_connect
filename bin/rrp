@@ -1,0 +1,39 @@
+#!/usr/bin/env ruby
+
+require 'awesome_print'
+require 'protect_connect'
+
+results = []
+
+servers = {
+       gem: ProtectConnect::Server.new('gem'),
+  protect1: ProtectConnect::Server.new('protect1')
+}
+
+commands = {
+                db: 'q db f=d',
+               log: 'q log f=d',
+             nodes: 'q node f=d',
+           library: 'q library f=d',
+            drives: 'q drives f=d',
+             paths: 'q paths f=d',
+           stgpool: 'q stgpool f=d',
+         occupancy: 'q occ',
+         filespace: 'q file f=d',
+            events: 'q ev * * begind=-10 endd=today',
+           summary: 'select * from summary where start_time >= current_timestamp-(10)day'
+}
+
+servers.each do |stanza,server|
+  puts "Collect for: #{stanza}"
+  commands.each do |key,command|
+  puts "  Command: #{command}"
+    out = server.exec(command).to_csv.to_csv
+    dir = "/Users/rdavis/Downloads/tsmdata/#{stanza}"
+    file = "#{dir}/#{key}.csv"
+    FileUtils.mkdir_p(dir)
+    File.open(file,'w+'){ |f| f << out }
+  end
+end
+
+

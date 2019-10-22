@@ -6,8 +6,8 @@ module ProtectConnect;
 
   DSMADMC = %w[
     dsmadmc
-    -id=admin
-    -pa=admin
+    -id=rdavis
+    -pa=protect1
     -display=list
     -dataonly=yes
     -alwaysprompt

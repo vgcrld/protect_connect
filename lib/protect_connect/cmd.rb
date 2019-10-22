@@ -1,4 +1,5 @@
 require 'json'
+require 'csv'
 
 class ProtectConnect::Cmd
 
@@ -35,6 +36,17 @@ class ProtectConnect::Cmd
       ret[head] << val
     end
     return ret
+  end
+
+  def to_csv
+    cmddata = self.to_h
+    header = cmddata.keys
+    data = cmddata.values
+    start = data.shift
+    zipped = start.zip(*data)
+    rows = zipped.map{ |o| CSV::Row.new( header, o ) }
+    table = CSV::Table.new(rows)
+    return table
   end
 
   private

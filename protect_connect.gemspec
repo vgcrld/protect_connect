@@ -25,6 +25,8 @@ Gem::Specification.new do |spec|
   spec.executables   << 'protect_connect'
   spec.executables   << 'protect_send'
   spec.executables   << 'protect_view'
+  spec.executables   << 'rrz'
+  spec.executables   << 'rrp'
 
   spec.require_paths = ["lib"]
 

@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'awesome_print'
+
+def join(*vals, join_with: ' ')
+  return vals.join(join_with)
+end
+
+
+dsmadmc = %w(dsmadmc -se=__stanza__ -id=__id__ -pa=__password__ -display=list)
+
+TIC = "'"
+
+CONFIG = { 
+  id: 'rdavis',
+  password: 'protect1',
+  stanza: 'protect1',
+} 
+
+COMMANDS = [
+  'select * from nodes',
+  'select * from occupancy',
+]
+
+exec_cmd = dsmadmc.map do |o|
+  match = o.match /__(\w+)__/
+  if match.nil?
+    o
+  else
+    key = match[1]
+    rep = "__#{key}__"
+    val = CONFIG[key.to_sym]
+    raise "no value given for #{key}" if val.nil?
+    o.sub(rep,val)
+  end
+end
+
+DSMADMC_EXEC = exec_cmd.join(' ')
+
+COMMANDS.each do |cmd|
+  puts join(DSMADMC_EXEC, TIC, cmd, TIC )
+end
+
+
+
+
+
