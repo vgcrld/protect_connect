@@ -11,27 +11,50 @@ servers = {
 }
 
 commands = {
+   
+    #
+    # Config Data
+    #
                 db: 'q db f=d',
+           dbspace: 'q dbspace f=d',
                log: 'q log f=d',
              nodes: 'q node f=d',
-           library: 'q library f=d',
-            drives: 'q drives f=d',
-             paths: 'q paths f=d',
+            domain: 'q do f=d',
+         policyset: 'q pol f=d',
+         mgmtclass: 'q mg f=d',
+       bucopygroup: 'q copy f=d t=b',
+       arcopygroup: 'q copy f=d t=a',
+          devclass: 'q dev f=d',
            stgpool: 'q stgpool f=d',
+           library: 'q library f=d',
+             drive: 'q drive f=d',
+            volume: 'q vol f=d',
+         libvolume: 'q libv f=d',
+              path: 'q paths f=d',
+               san: 'q san f=d',
+          schedule: 'q sched f=d',
+     adminschedule: 'q sched t=a f=d',
          occupancy: 'q occ',
          filespace: 'q file f=d',
-            events: 'q ev * * begind=-10 endd=today',
-           summary: 'select * from summary where start_time >= current_timestamp-(10)day'
+    #
+    # Incremental Data - Candidates for incremental extract
+    #
+           summary: 'select * from summary',
+        volhistory: 'select * from volhistory',
+       adminevents: 'q ev * t=a begind=-2 endd=today begint=now endt=now',
+      clientevents: 'q ev * * begind=-2 endd=today begint=now endt=now',
+            actlog: 'select * from actlog where date_time>=current_timestamp-(1)day',
 }
 
 servers.each do |stanza,server|
   puts "Collect for: #{stanza}"
+  dir = "/Users/rdavis/Downloads/tsmdata/#{stanza}"
+  FileUtils.remove_dir(dir,force=true)
+  FileUtils.mkdir_p(dir)
   commands.each do |key,command|
   puts "  Command: #{command}"
     out = server.exec(command).to_csv.to_csv
-    dir = "/Users/rdavis/Downloads/tsmdata/#{stanza}"
     file = "#{dir}/#{key}.csv"
-    FileUtils.mkdir_p(dir)
     File.open(file,'w+'){ |f| f << out }
   end
 end

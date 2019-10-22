@@ -98,7 +98,7 @@ module ProtectConnect
         cycles += 1
         if (cycles%10000) == 0
           count += 1
-          raise "Connect failed." if count == 100
+          raise "Connect failed." if count == 1000
         end
       end
       return data
