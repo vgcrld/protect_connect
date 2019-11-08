@@ -2,13 +2,16 @@
 
 require 'awesome_print'
 require 'protect_connect'
+require 'logger'
 
 results = []
 
 servers = {
        gem: ProtectConnect::Server.new('gem'),
-  protect1: ProtectConnect::Server.new('protect1')
+# protect1: ProtectConnect::Server.new('protect1')
 }
+
+log = Logger.new(STDOUT)
 
 commands = {
    
@@ -30,7 +33,7 @@ commands = {
              drive: 'q drive f=d',
             volume: 'q vol f=d',
          libvolume: 'q libv f=d',
-              path: 'q paths f=d',
+              path: 'q path f=d',
                san: 'q san f=d',
           schedule: 'q sched f=d',
      adminschedule: 'q sched t=a f=d',
@@ -39,22 +42,28 @@ commands = {
     #
     # Incremental Data - Candidates for incremental extract
     #
-           summary: 'select * from summary',
-        volhistory: 'select * from volhistory',
-       adminevents: 'q ev * t=a begind=-2 endd=today begint=now endt=now',
-      clientevents: 'q ev * * begind=-2 endd=today begint=now endt=now',
-            actlog: 'select * from actlog where date_time>=current_timestamp-(1)day',
+           summary: 'select * from summary where start_time>=current_timestamp-(5)minute',
+        volhistory: 'select * from volhistory where date_time>=current_timestamp-(5)minute',
+       adminevents: 'q ev * t=a begint=-00:05 endt=now',
+      clientevents: 'q ev * * begint=-00:05 endt=now',
+            actlog: 'select * from actlog where date_time>=current_timestamp-(5)minute',
 }
 
+timestamp = Time.now.to_f
+
 servers.each do |stanza,server|
-  puts "Collect for: #{stanza}"
+  log.info "Collect for: #{stanza}"
   dir = "/Users/rdavis/Downloads/tsmdata/#{stanza}"
-  FileUtils.remove_dir(dir,force=true)
   FileUtils.mkdir_p(dir)
   commands.each do |key,command|
-  puts "  Command: #{command}"
-    out = server.exec(command).to_csv.to_csv
-    file = "#{dir}/#{key}.csv"
+  file = "#{dir}/#{key}.#{timestamp}.csv"
+    log.info "Command: '#{command}' to file: #{file}"
+    result = server.exec(command)
+    if result.data.first =~ /^ANR2034E/
+      log.warn "Command: '#{command}' did not return results"
+      next
+    end
+    out = result.to_csv.to_csv
     File.open(file,'w+'){ |f| f << out }
   end
 end
