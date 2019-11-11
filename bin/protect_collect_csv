@@ -39,6 +39,8 @@ commands = {
      adminschedule: 'q sched t=a f=d',
          occupancy: 'q occ',
          filespace: 'q file f=d',
+          sessions: 'q sess f=d',
+         processes: 'select * from processes',
     #
     # Incremental Data - Candidates for incremental extract
     #
