@@ -14,7 +14,7 @@ servers = {
 log = Logger.new(STDOUT)
 
 commands = {
-   
+
     #
     # Config Data
     #
@@ -55,7 +55,7 @@ timestamp = Time.now.to_f
 
 servers.each do |stanza,server|
   log.info "Collect for: #{stanza}"
-  dir = "/Users/rdavis/Downloads/tsmdata/#{stanza}"
+  dir = "/home/ATS/rdavis/tsmdata/#{stanza}"
   FileUtils.mkdir_p(dir)
   commands.each do |key,command|
   file = "#{dir}/#{key}.#{timestamp}.csv"

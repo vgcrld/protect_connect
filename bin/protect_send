@@ -52,17 +52,19 @@ endtime   = starttime + (opts[:length] * 60)
 log.info "Select from #{starttime} to #{endtime}"
 
 # Filter on name (:commands option)
+dir = "#{OUTDIR}/*.csv"
+puts "Collect from '#{OUTDIR}/*.csv'"
 if opts[:commands].nil?
-  files = Dir.glob("#{OUTDIR}/*.json")
+  files = Dir.glob(dir)
 else
   filter = Regexp.new(opts[:commands])
-  files = Dir.glob("#{OUTDIR}/*.json").grep(filter)
+  files = Dir.glob(dir).grep(filter)
 end
 
 # Filter on date
 files = files.select do |file|
   now = Time.now.to_f
-  ts = Time.at(file.match(/_(\d+\.\d+)\.json$/)[1].to_f)
+  ts = Time.at(file.match(/.(\d+\.\d+)\.csv$/)[1].to_f)
   file if ts >= starttime and ts <= endtime
 end
 
