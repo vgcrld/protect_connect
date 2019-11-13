@@ -65,7 +65,7 @@ servers.each do |stanza,server|
       log.warn "Command: '#{command}' did not return results"
       next
     end
-    out = result.to_csv.to_csv
+    out = result.to_csv_table.to_csv
     File.open(file,'w+'){ |f| f << out }
   end
 end
