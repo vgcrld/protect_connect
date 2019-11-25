@@ -3,15 +3,33 @@
 require 'awesome_print'
 require 'protect_connect'
 require 'logger'
+require 'optimist'
+
+# Options
+opts = Optimist::options do
+
+  opt :stanzas, "TSM dsm.sys stanza(s)",
+        type: :strings,
+        required: true
+
+  opt :commands, "Send only Filter",
+        type: :string
+
+  opt :outdir, "Query Repo Directory",
+        type: :string,
+        required: true
+
+end
 
 results = []
+log     = Logger.new(STDOUT)
+servers = {}
 
-servers = {
-       gem: ProtectConnect::Server.new('gem'),
-# protect1: ProtectConnect::Server.new('protect1')
-}
 
-log = Logger.new(STDOUT)
+# Connect to each server
+opts[:stanzas].each do |stanza|
+  servers[stanza] = ProtectConnect::Server.new(stanza)
+end
 
 commands = {
 
@@ -41,6 +59,7 @@ commands = {
          filespace: 'q file f=d',
           sessions: 'q sess f=d',
          processes: 'select * from processes',
+            status: 'select * from status',
     #
     # Incremental Data - Candidates for incremental extract
     #
@@ -56,6 +75,7 @@ timestamp = Time.now.to_f
 servers.each do |stanza,server|
   log.info "Collect for: #{stanza}"
   dir = "/home/ATS/rdavis/tsmdata/#{stanza}"
+  dir = "#{opts[:outdir]}/#{server.name}-#{server.uuid}"
   FileUtils.mkdir_p(dir)
   commands.each do |key,command|
   file = "#{dir}/#{key}.#{timestamp}.csv"
