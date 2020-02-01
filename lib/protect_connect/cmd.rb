@@ -38,7 +38,7 @@ class ProtectConnect::Cmd
     return ret
   end
 
-  def to_csv
+  def to_csv_table
     cmddata = self.to_h
     header = cmddata.keys
     data = cmddata.values

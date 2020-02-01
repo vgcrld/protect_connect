@@ -10,7 +10,8 @@ require 'optimist'
 opts = Optimist::options do
 
   opt :stanza, "TSM dsm.sys stanza",
-        type: :string, required: true
+        type: :string,
+        required: true
 
   opt :start, "Select from <start> minutes ago",
         type: :integer,
@@ -23,8 +24,9 @@ opts = Optimist::options do
   opt :commands, "Send only Filter",
         type: :string
 
-  opt :outdir, "Output Directory",
-        type: :string, default: '/tmp/protect_collect'
+  opt :outdir, "Query Repo Directory",
+        type: :string,
+        required: true
 
   opt :sendir, "Send file queue",
         type: :string, default: '/tmp/protect_collect/queue'
@@ -52,23 +54,25 @@ endtime   = starttime + (opts[:length] * 60)
 log.info "Select from #{starttime} to #{endtime}"
 
 # Filter on name (:commands option)
+dir = "#{OUTDIR}/*.csv"
+puts "Collect from '#{OUTDIR}/*.csv'"
 if opts[:commands].nil?
-  files = Dir.glob("#{OUTDIR}/*.json")
+  files = Dir.glob(dir)
 else
   filter = Regexp.new(opts[:commands])
-  files = Dir.glob("#{OUTDIR}/*.json").grep(filter)
+  files = Dir.glob(dir).grep(filter)
 end
 
 # Filter on date
 files = files.select do |file|
   now = Time.now.to_f
-  ts = Time.at(file.match(/_(\d+\.\d+)\.json$/)[1].to_f)
+  ts = Time.at(file.match(/.(\d+\.\d+)\.csv$/)[1].to_f)
   file if ts >= starttime and ts <= endtime
 end
 
 # Make file and tar it up
-tarfile = "#{SENDIR}/#{srv.name}.#{Time.now.strftime("%Y%m%d.%H%M%S.%Z")}.#{srv.uuid}.protect_connect"
-files.each do |file|
+tarfile = "#{SENDIR}/#{srv.name}.#{Time.now.strftime("%Y%m%d.%H%M%S.%Z")}.#{srv.uuid}.spectrum_protect"
+files.sort.each do |file|
   dir = File.dirname(file)
   fn  = File.basename(file)
   log.info "Adding to send: #{fn}"
@@ -83,5 +87,5 @@ else
 end
 
 # All done
-log.info "Finished, closing connection."
+log.info "Finished, closing connection: '#{tarfile}.gz' created."
 srv.close
