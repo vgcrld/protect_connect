@@ -16,6 +16,10 @@ module ProtectConnect
       enable :corss_origin
     end
     
+    get '/servers' do
+      $server.keys.to_json
+    end
+
     get '/settings' do
       haml :settings
     end
