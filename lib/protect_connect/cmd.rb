@@ -19,12 +19,14 @@ class ProtectConnect::Cmd
   end
 
   def to_array_of_hashes
+    ret = []
     data = to_h
-    ret = Array.new(data.keys.length, Hash.new)
-    data.keys.each do |head|
-      data.values.first.each_index do |i|
-        ret[i][head] = data[head][i] 
+    data.values.first.each_index do |i|
+      rec = {}
+      headers.each do |head|
+        rec.store(head,data[head][i])
       end
+      ret << rec
     end
     return ret
   end
