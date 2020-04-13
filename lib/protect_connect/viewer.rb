@@ -35,9 +35,12 @@ module ProtectConnect
     end
 
     get '/query/:instance/:query' do
-      instance=params[:instance].to_sym
+      instance=params[:instance]
       query=params[:query]
-      data = $server[instance.to_sym].exec(query)
+      if $server[instance].nil?
+        return ["#{instance} is unavailable."].to_json
+      end
+      data = $server[instance].exec(query)
       data.to_json
     end
 

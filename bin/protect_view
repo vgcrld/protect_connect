@@ -2,10 +2,16 @@
 
 require 'rack'
 require 'protect_connect'
+require 'yaml'
 
-$server = { 
-  :tsm1500 => ProtectConnect::Server.new(:gem) 
-}
+server_list = YAML.load(File.new('../etc/servers.yaml'))
+
+$server = Hash.new
+
+server_list.map do |server_def|
+  stanza = server_def['stanza']
+  $server[stanza] = ProtectConnect::Server.new(server_def) 
+end 
 
 app = ProtectConnect::Viewer
 

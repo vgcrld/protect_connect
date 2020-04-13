@@ -8,14 +8,19 @@ module ProtectConnect
 
   class Server
 
-    attr_reader :output, :uuid, :name, :dsmadmc
+    attr_reader :output, :uuid, :name, :dsmadmc, :user, :password, :stanza, :log
 
-    def initialize(stanza)
-      @dsmadmc = dsmadmc?(stanza)
-      @prompt = init
-      @uuid = get_uuid
-      @name = get_name
-      @stanza = stanza
+    def initialize(config)
+      @log = Logger.new(STDOUT)
+      @stanza = config['stanza']
+      @user = config['user']
+      @password = config['password']
+      @dsmadmc = dsmadmc?(@stanza)
+      unless @dsmadmc.nil?
+        @prompt = init
+        @uuid = get_uuid
+        @name = get_name
+      end
     end
 
     # Inital login should return the prompt from TSM
@@ -105,9 +110,12 @@ module ProtectConnect
     end
 
     def dsmadmc?(stanza)
-      dsmadmc = [ ProtectConnect::DSMADMC, "-se=#{stanza}" ].join(" ")
+      dsmadmc = [ ProtectConnect::DSMADMC, "-se=#{self.stanza} -id=#{self.user} -pa=#{self.password}" ].join(" ")
       rc = `#{dsmadmc} quit`
-      raise "Can't connect to dsmadmc: #{rc}" if $?.exitstatus > 0
+      if $?.exitstatus > 0
+        @log.warn "Can't connect to dsmadmc: #{rc}" if $?.exitstatus > 0
+        return nil
+      end
       return dsmadmc
     end
 

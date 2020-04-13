@@ -1,0 +1,13 @@
+---
+
+- stanza: gem
+  user: admin
+  password: admin
+
+# - stanza: gem2
+#   user: admin
+#   password: admin
+
+# - stanza: protect1
+#   user: admin
+#   password: admin
