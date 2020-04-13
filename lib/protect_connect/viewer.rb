@@ -39,7 +39,6 @@ module ProtectConnect
     end
 
     get '/query/:instance/:query' do
-      ap params
       instance=params[:instance]
       query=params[:query]
       if $server[instance].nil?
