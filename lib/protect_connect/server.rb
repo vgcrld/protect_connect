@@ -8,7 +8,7 @@ module ProtectConnect
 
   class Server
 
-    attr_reader :output, :uuid, :name, :dsmadmc, :user, :password, :stanza, :log
+    attr_reader :output, :uuid, :name, :dsmadmc, :user, :password, :stanza, :log, :lastcmd
 
     def initialize(config)
       @log = Logger.new(STDOUT)
@@ -43,6 +43,7 @@ module ProtectConnect
 
     def exec(cmd,name=nil)
       tsmcmd = ProtectConnect::Cmd.new(cmd,name=name)
+      @lastcmd = tsmcmd
       begin
         @stdin.puts(cmd)
       rescue

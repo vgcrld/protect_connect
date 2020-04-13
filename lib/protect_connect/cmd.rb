@@ -18,6 +18,17 @@ class ProtectConnect::Cmd
     @data = clean(raw)
   end
 
+  def to_array_of_hashes
+    data = to_h
+    ret = Array.new(data.keys.length, Hash.new)
+    data.keys.each do |head|
+      data.values.first.each_index do |i|
+        ret[i][head] = data[head][i] 
+      end
+    end
+    return ret
+  end
+
   def to_json
     self.to_h.to_json
   end

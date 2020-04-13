@@ -39,13 +39,19 @@ module ProtectConnect
     end
 
     get '/query/:instance/:query' do
+      ap params
       instance=params[:instance]
       query=params[:query]
       if $server[instance].nil?
         return ["#{instance} is unavailable."].to_json
       end
       data = $server[instance].exec(query)
-      data.to_json
+      case params[:format]
+      when 'array'
+        data.to_array_of_hashes.to_json
+      else
+        data.to_json
+      end
     end
 
   end
