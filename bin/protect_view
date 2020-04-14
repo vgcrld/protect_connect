@@ -4,7 +4,11 @@ require 'rack'
 require 'protect_connect'
 require 'yaml'
 
-server_list = YAML.load(File.new('../etc/servers.yaml'))
+BIN_DIR = File.dirname(__FILE__)
+HOME_DIR = File.dirname(BIN_DIR)
+ETC_DIR = "#{HOME_DIR}/etc"
+
+server_list = YAML.load(File.new("#{ETC_DIR}/servers.yaml"))
 
 $server = Hash.new
 
